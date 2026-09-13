@@ -17,7 +17,7 @@ Copiar solo cuando haga falta una ficha concreta. Esta plantilla no es una tarea
 |---|---|---|---|---|---|---|
 | Pendiente | | | | | | NO_EJECUTADO |
 
-Usar `VERIFICADO`, `FALLIDO`, `NO_EJECUTADO` o `PENDIENTE`. Registrar build, lint, HTTP, navegador y revisión como comprobaciones distintas. No pegar secretos, transcripciones ni logs completos.
+Usar `VERIFICADO`, `FALLIDO`, `NO_EJECUTADO` o `PENDIENTE`. Registrar build, lint, pruebas automatizadas del lanzador, HTTP, navegador y revisión como comprobaciones distintas. No pegar secretos, transcripciones ni logs completos.
 
 ## Revisión independiente
 

@@ -17,6 +17,6 @@ El receptor debe verificar el estado actual antes de actuar. Esta plantilla y la
 - Siguiente acción concreta:
 - Límites que continúan vigentes:
 
-Para este piloto: instalación local y ECC informativo; P0–P2, credenciales reales, conexiones a proveedores y despliegues permanecen fuera del alcance. No incluir contraseñas, cookies, claves, tokens, contenido de `.env.local`, SQLite ni logs completos.
+Para este piloto: instalación local y ECC informativo; P0–P2, credenciales reales, conexiones a proveedores y despliegues permanecen fuera del alcance. No incluir contraseñas, cookies, claves, tokens, contenido de `.env.local`, volcados de SQLite ni logs completos. Sí pueden registrarse resultados sanitizados de autenticación y metadatos de persistencia obtenidos por pruebas locales autorizadas, sin revelar valores secretos.
 
 Al retomar, contrastar directorio/rama/SHA y cambios locales, confirmar que la evidencia corresponde al diff actual y registrar cualquier discrepancia. No interpretar una nota de intención como ejecución ni un resultado histórico como estado actual.

@@ -8,13 +8,13 @@ Desde `/Volumes/OWC Envoy Ultra/reckoner4MM`, abrir `Reckoner4MM.command` o ejec
 python3 scripts/local.py start
 ```
 
-La interfaz local está en [127.0.0.1:5174](http://127.0.0.1:5174), con backend en `127.0.0.1:8014`. La contraseña persistente se crea en `.env.local`; su consulta pertenece exclusivamente al usuario en su terminal local. [Uso, estado, reinicio y contraseña](docs/development/local-setup.md).
+La interfaz local está en [127.0.0.1:5174](http://127.0.0.1:5174), con backend en `127.0.0.1:8014`. La contraseña persistente se crea en `.env.local`; su visualización pertenece exclusivamente al usuario en su terminal local. Las pruebas locales pueden consumirla internamente sin exponer su valor. [Uso, estado, reinicio y contraseña](docs/development/local-setup.md).
 
 - [Flujo compartido de trabajo](docs/development/workflow.md): alcance, carriles, evidencia y revisión independiente.
 - [Ficha de tarea](docs/development/task-template.md) y [continuidad entre sesiones](docs/development/handoff-template.md).
 - [Procedencia de ECC y licencia MIT](docs/development/ecc-provenance.md). El piloto es local e informativo, sin instalación global ni nuevos hooks bloqueantes; se conserva [la licencia GPL de Reckoner](LICENSE).
 
-La base requiere **Python 3.13**, contiene **19 proveedores** y programa el sondeo cada **30 segundos**. No incluye Dockerfile, workflows CI ni ficheros de tests. Estas diferencias respecto al README original se documentan en [los límites del baseline](docs/development/local-setup.md#límites-observados-en-la-base-upstream); no se presentan como defectos funcionales corregidos por este piloto.
+La base upstream requiere **Python 3.13**, contiene **19 proveedores** y programa el sondeo cada **30 segundos**. No incluye Dockerfile, workflows CI ni ficheros de tests; esta instalación añade comprobaciones locales del lanzador. La excepción mínima al código de aplicación es retirar un parámetro y su import de tipo sin usar en `App.tsx` para resolver el fallo de lint original, sin cambiar el comportamiento del callback. Los límites restantes se documentan en [las discrepancias del baseline](docs/development/local-setup.md#límites-observados-en-la-base-upstream) y no se han corregido en este piloto.
 
 ## Documentación original de upstream
 

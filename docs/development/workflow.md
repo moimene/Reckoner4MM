@@ -1,8 +1,8 @@
 # Flujo común del piloto ECC
 
-El objetivo de esta fase es instalar Reckoner localmente y probar una forma común de trabajar con Codex y Claude. Se mantienen el backend, frontend, proveedores y lockfiles de la base upstream. Las ampliaciones P0, P1 y P2 del PRD, los datos reales de proveedores y los despliegues se abordarán en una fase posterior.
+El objetivo de esta fase es instalar Reckoner localmente y probar una forma común de trabajar con Codex y Claude. Se conserva la base upstream y sus lockfiles, con una excepción mínima de instalación: retirar un parámetro sin usar y su import de tipo en `frontend/src/App.tsx` para resolver el fallo de lint, sin cambiar el comportamiento del callback. Las ampliaciones P0, P1 y P2 del PRD, los datos reales de proveedores y los despliegues se abordarán en una fase posterior.
 
-Esta es una adaptación documental de ECC, con [procedencia y licencia](ecc-provenance.md). Sus nuevos controles son **informativos**: una omisión genera un aviso y queda pendiente en el informe; no se introduce un bloqueo de Git, hook, CI o ejecución. Un aviso tampoco convierte una prueba ausente en una prueba superada.
+Esta es una adaptación documental de ECC, con [procedencia y licencia](ecc-provenance.md). Sus nuevos controles son **informativos**: una omisión genera un aviso y queda pendiente en el informe; no se introduce un bloqueo de Git, hook, CI o ejecución. Un aviso tampoco convierte una prueba ausente en una prueba superada. Las pruebas técnicas del lanzador y su verificación local tienen resultados reales de éxito o fallo; este carácter informativo no permite ignorar o reclasificar esos resultados.
 
 ## 1. Situar el trabajo
 
@@ -14,7 +14,7 @@ El checkout del usuario está en `/Volumes/OWC Envoy Ultra/reckoner4MM`; los car
 
 Leer el código y las instrucciones aplicables, elegir la comprobación mínima que demuestre el resultado y anotar el plan en la ficha. Para este piloto, usar [la guía de instalación local](local-setup.md) y conservar la resolución de dependencias con lockfiles congelados.
 
-Aplicar únicamente los cambios asignados. No aprovechar el piloto para corregir defectos funcionales heredados, reescribir proveedores, instalar herramientas globales o desarrollar suscripciones. Documentar los hallazgos y proponer una tarea posterior cuando corresponda. Las instrucciones de despliegue y obtención de credenciales del README original son referencia upstream, no autorización para ejecutarlas.
+Aplicar únicamente los cambios asignados. La excepción aprobada de lint se documenta en [la guía local](local-setup.md); no aprovecharla para corregir otros defectos funcionales heredados, reescribir proveedores, instalar herramientas globales o desarrollar suscripciones. Documentar los hallazgos y proponer una tarea posterior cuando corresponda. Las instrucciones de despliegue y obtención de credenciales del README original son referencia upstream, no autorización para ejecutarlas.
 
 ## 3. Verificar y revisar
 
@@ -22,13 +22,13 @@ Registrar cada comprobación con directorio, comando o procedimiento, fecha, SHA
 
 Una revisión independiente de código o documentación debe venir de otro agente o contexto de revisión que no haya implementado el cambio. Entregarle el diff y la evidencia, permitir que inspeccione las fuentes y registrar sus hallazgos, resoluciones y limitaciones. Releer la propia respuesta no cuenta como revisión independiente.
 
-Estados de evidencia: `VERIFICADO`, `FALLIDO`, `NO_EJECUTADO` o `PENDIENTE`. Separar revisión estática, build, lint, comprobación HTTP y recorrido manual de navegador. Mantener visibles los fallos upstream; no alterar un umbral, excluir una prueba o rebajar una comprobación para obtener un resultado verde. Si cambia el código relevante, revisar qué evidencia ha quedado desactualizada y repetir solo lo necesario.
+Estados de evidencia: `VERIFICADO`, `FALLIDO`, `NO_EJECUTADO` o `PENDIENTE`. Separar revisión estática, build, lint, pruebas automatizadas del lanzador, comprobación HTTP y recorrido manual de navegador. Mantener visibles los fallos upstream; no alterar un umbral, excluir una prueba o rebajar una comprobación para obtener un resultado verde. Si cambia el código relevante, revisar qué evidencia ha quedado desactualizada y repetir solo lo necesario.
 
 ## 4. Cerrar o transferir
 
 Completar la ficha con archivos cambiados, commit final, resultado visible, evidencia y asuntos pendientes. Para continuar en otra sesión o herramienta, usar [la plantilla de continuidad](handoff-template.md). La siguiente sesión vuelve a comprobar Git y los archivos citados; un resumen guardado no acredita el estado actual ni amplía la autorización.
 
-Mantener la documentación revisable en el repositorio. Contraseñas, cookies, tokens, credenciales de proveedores, `.env.local`, `backend/data/` y `.local-runtime/` permanecen fuera de Git y de las fichas. No adjuntar logs completos o transcripciones; conservar solo evidencia mínima sanitizada. Los agentes no ejecutan `scripts/local.py password`: el usuario consulta la contraseña exclusivamente en su terminal local.
+Mantener la documentación revisable en el repositorio. Contraseñas, cookies, tokens, credenciales de proveedores, `.env.local`, `backend/data/` y `.local-runtime/` permanecen fuera de Git y de las fichas. No adjuntar logs completos, volcados de SQLite o transcripciones; conservar solo evidencia mínima sanitizada. Evitar inspecciones indiscriminadas: una prueba local autorizada puede consumir la contraseña internamente y leer metadatos de SQLite para comprobar autenticación y persistencia, sin mostrar valores secretos ni trasladarlos a chat, logs, prompts o capturas. Los agentes no ejecutan `scripts/local.py password`: la visualización de la contraseña mediante ese subcomando pertenece exclusivamente al usuario en su terminal local.
 
 ## Cómo evaluar el piloto
 

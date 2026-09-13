@@ -1,6 +1,6 @@
 # Uso local de Reckoner4MM
 
-La instalación de esta fase mantiene Reckoner upstream y añade un lanzador local y documentación de trabajo. El desarrollo P0–P2 del PRD sigue pendiente. El estado efectivo y las pruebas ejecutadas se registran en la entrega de instalación; esta guía describe el procedimiento y no afirma que una prueba haya pasado.
+La instalación de esta fase parte de Reckoner upstream y añade un lanzador local, pruebas de ese lanzador y documentación de trabajo. La excepción mínima al código de aplicación es la corrección del fallo de lint descrita más abajo. El desarrollo P0–P2 del PRD sigue pendiente. El estado efectivo y las pruebas ejecutadas se registran en la entrega de instalación; esta guía describe el procedimiento y no afirma que una prueba haya pasado.
 
 ## Abrir y controlar la aplicación
 
@@ -24,7 +24,7 @@ El lanzador crea automáticamente una contraseña local persistente en `.env.loc
 python3 scripts/local.py password
 ```
 
-Ese comando muestra un secreto. Los agentes no deben invocarlo ni incluir su salida en herramientas, capturas, entregas o mensajes. La contraseña no se guarda en la documentación.
+Ese comando muestra un secreto. Los agentes no deben invocarlo ni incluir su salida en herramientas, capturas, entregas o mensajes. La contraseña no se guarda en la documentación. Una prueba local autorizada puede consumir la contraseña internamente y leer metadatos de SQLite para verificar autenticación y persistencia; sus salidas deben permanecer sanitizadas y no revelar secretos en chat, logs o prompts.
 
 El estado y los logs del lanzador residen en `.local-runtime/`; SQLite reside en `backend/data/tracker.db`. Estos directorios y `.env.local` están excluidos de Git. Parar o reiniciar conserva la base y la contraseña. No borrar esos archivos como mecanismo de reinicio.
 
@@ -47,7 +47,7 @@ Registrar resultado, fecha y SHA/diff de cada comprobación siguiendo [el flujo 
 4. La API registra 19 proveedores. Sin credenciales, el dashboard muestra el estado vacío y ajustes ofrece esos proveedores; no debe inferirse saldo cero ni conectividad real.
 5. Detener y volver a iniciar conserva SQLite y la configuración local; comprobar que no se utilizan los puertos o procesos de otras aplicaciones.
 
-No hay tests automatizados upstream que ejecutar con un comando genérico de test. Las comprobaciones anteriores son build, lint, HTTP y pruebas manuales; registrar cada categoría por separado.
+La base upstream no contiene una suite de tests automatizados. La instalación incorpora [pruebas del lanzador](../../tests/test_local_launcher.py) y una [verificación local de autenticación y persistencia](../../scripts/verify_local.py). Son comprobaciones técnicas reales que pueden pasar o fallar; registrar sus resultados sin confundirlos con los avisos informativos de metodología ECC. No prueban la conectividad real de los proveedores ni las ampliaciones P0–P2. Registrar build, lint, pruebas automatizadas, HTTP y navegador por separado, sin presumir resultados por la mera existencia de estos archivos.
 
 ## Límites observados en la base upstream
 
@@ -59,7 +59,8 @@ Base de referencia: `CaptainASIC/reckoner@8a5d5b0d77f0461abf98e61709cf02d94c63fd
 | Proveedores | `backend/providers/__init__.py` registra 19, incluido Warp; la tabla original enumera 18. | Usar el registro como inventario. |
 | Sondeo | README anuncia 5–30 minutos; `backend/scheduler.py` programa todos cada 30 segundos e ignora `refresh_interval`. | Documentado; no corregido. |
 | Docker | README afirma incluir Dockerfile; no existe en el árbol de esa revisión. | No hay receta Docker validada ni despliegue en esta fase. |
-| CI y tests | No hay workflows CI ni ficheros de tests upstream; pytest aparece como dependencia de desarrollo. | No se hereda ninguna afirmación de CI o pruebas superadas. |
+| CI y tests | No hay workflows CI ni ficheros de tests upstream; pytest aparece como dependencia de desarrollo. | Se añaden comprobaciones locales del lanzador, sin afirmar CI ni resultados no ejecutados. |
+| Lint frontend | `pnpm lint` fallaba en la base por `_updated` sin usar en `frontend/src/App.tsx:39`. | Excepción mínima: retirar ese parámetro y el import de tipo `BalanceSnapshot`; el cuerpo del callback permanece igual. |
 | Configuración | Los módulos de arranque upstream no cargan `.env` expresamente; el ejemplo incluye dominios del autor. | Usar la configuración explícita del lanzador local. |
 
 Estas limitaciones no se resuelven por añadir documentación ECC. Los endpoints de proveedores, saldos reales, renovaciones y futuras suscripciones permanecen fuera de la validación de instalación.
