@@ -1,6 +1,6 @@
 # Flujo común del piloto ECC
 
-El objetivo de esta fase es instalar Reckoner localmente y probar una forma común de trabajar con Codex y Claude. Se conserva la base upstream y sus lockfiles, con una excepción mínima de instalación: retirar un parámetro sin usar y su import de tipo en `frontend/src/App.tsx` para resolver el fallo de lint, sin cambiar el comportamiento del callback. Las ampliaciones P0, P1 y P2 del PRD, los datos reales de proveedores y los despliegues se abordarán en una fase posterior.
+El objetivo de esta fase es instalar Reckoner localmente y probar una forma común de trabajar con Codex y Claude. Se conserva la base upstream y sus lockfiles, con dos correcciones mínimas de instalación en `frontend/src/App.tsx` y `frontend/src/hooks/useDashboard.ts`: retirar un parámetro y su import sin usar para resolver el lint original, y recargar dashboard y ajustes tras un login correcto para eliminar el error inicial de autenticación. Esa recarga usa datos guardados y no fuerza un sondeo de proveedores. Las ampliaciones P0, P1 y P2 del PRD, los datos reales de proveedores y los despliegues se abordarán en una fase posterior.
 
 Esta es una adaptación documental de ECC, con [procedencia y licencia](ecc-provenance.md). Sus nuevos controles son **informativos**: una omisión genera un aviso y queda pendiente en el informe; no se introduce un bloqueo de Git, hook, CI o ejecución. Un aviso tampoco convierte una prueba ausente en una prueba superada. Las pruebas técnicas del lanzador y su verificación local tienen resultados reales de éxito o fallo; este carácter informativo no permite ignorar o reclasificar esos resultados.
 
@@ -14,7 +14,7 @@ El checkout del usuario está en `/Volumes/OWC Envoy Ultra/reckoner4MM`; los car
 
 Leer el código y las instrucciones aplicables, elegir la comprobación mínima que demuestre el resultado y anotar el plan en la ficha. Para este piloto, usar [la guía de instalación local](local-setup.md) y conservar la resolución de dependencias con lockfiles congelados.
 
-Aplicar únicamente los cambios asignados. La excepción aprobada de lint se documenta en [la guía local](local-setup.md); no aprovecharla para corregir otros defectos funcionales heredados, reescribir proveedores, instalar herramientas globales o desarrollar suscripciones. Documentar los hallazgos y proponer una tarea posterior cuando corresponda. Las instrucciones de despliegue y obtención de credenciales del README original son referencia upstream, no autorización para ejecutarlas.
+Aplicar únicamente los cambios asignados. Las correcciones aprobadas de lint y recarga tras login se documentan en [la guía local](local-setup.md); no aprovecharlas para corregir otros defectos funcionales heredados, reescribir proveedores, instalar herramientas globales o desarrollar suscripciones. Documentar los hallazgos y proponer una tarea posterior cuando corresponda. Las instrucciones de despliegue y obtención de credenciales del README original son referencia upstream, no autorización para ejecutarlas.
 
 ## 3. Verificar y revisar
 

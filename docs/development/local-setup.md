@@ -1,6 +1,6 @@
 # Uso local de Reckoner4MM
 
-La instalación de esta fase parte de Reckoner upstream y añade un lanzador local, pruebas de ese lanzador y documentación de trabajo. La excepción mínima al código de aplicación es la corrección del fallo de lint descrita más abajo. El desarrollo P0–P2 del PRD sigue pendiente. El estado efectivo y las pruebas ejecutadas se registran en la entrega de instalación; esta guía describe el procedimiento y no afirma que una prueba haya pasado.
+La instalación de esta fase parte de Reckoner upstream y añade un lanzador local, pruebas de ese lanzador y documentación de trabajo. Las correcciones mínimas al código de aplicación resuelven el lint original y la recarga del estado tras iniciar sesión, como se detalla más abajo. El desarrollo P0–P2 del PRD sigue pendiente. El estado efectivo y las pruebas ejecutadas se registran en la entrega de instalación; esta guía describe el procedimiento y no afirma que una prueba haya pasado.
 
 ## Abrir y controlar la aplicación
 
@@ -43,11 +43,20 @@ Registrar resultado, fecha y SHA/diff de cada comprobación siguiendo [el flujo 
 
 1. Instalación desde los lockfiles sin modificarlos; `pnpm build` y `pnpm lint`, con sus códigos de salida y cualquier fallo heredado.
 2. `GET /api/health`: comprobar el cuerpo `status=ok` y `db_connected=true`, además del estado HTTP. Upstream puede devolver HTTP 200 con estado `degraded`.
-3. Protección del dashboard y ajustes activa; el usuario puede iniciar sesión con su contraseña local sin exponerla a los agentes.
+3. Protección del dashboard y ajustes activa; el usuario puede iniciar sesión con su contraseña local sin exponerla a los agentes. Tras el login, comprobar que desaparece el error del acceso anónimo inicial y que dashboard y ajustes se recargan sin esperar al siguiente ciclo automático.
 4. La API registra 19 proveedores. Sin credenciales, el dashboard muestra el estado vacío y ajustes ofrece esos proveedores; no debe inferirse saldo cero ni conectividad real.
 5. Detener y volver a iniciar conserva SQLite y la configuración local; comprobar que no se utilizan los puertos o procesos de otras aplicaciones.
 
 La base upstream no contiene una suite de tests automatizados. La instalación incorpora [pruebas del lanzador](../../tests/test_local_launcher.py) y una [verificación local de autenticación y persistencia](../../scripts/verify_local.py). Son comprobaciones técnicas reales que pueden pasar o fallar; registrar sus resultados sin confundirlos con los avisos informativos de metodología ECC. No prueban la conectividad real de los proveedores ni las ampliaciones P0–P2. Registrar build, lint, pruebas automatizadas, HTTP y navegador por separado, sin presumir resultados por la mera existencia de estos archivos.
+
+Desde la raíz del checkout local:
+
+```bash
+python3 -m unittest discover -s tests -v
+python3 scripts/verify_local.py --restart
+```
+
+El primer comando comprueba el lanzador. El segundo exige los servicios locales en marcha y una **instalación vacía, sin proveedores configurados**: comprueba autenticación y estados sin credenciales, crea snapshots de estado y reinicia únicamente los servicios propios para verificar la persistencia. No usarlo como test de una instalación que ya contenga cuentas o credenciales de proveedores. La contraseña se consume internamente y los resultados se muestran sanitizados. Registrar la salida efectiva; estos comandos no acreditan por sí solos un resultado superado.
 
 ## Límites observados en la base upstream
 
@@ -60,7 +69,8 @@ Base de referencia: `CaptainASIC/reckoner@8a5d5b0d77f0461abf98e61709cf02d94c63fd
 | Sondeo | README anuncia 5–30 minutos; `backend/scheduler.py` programa todos cada 30 segundos e ignora `refresh_interval`. | Documentado; no corregido. |
 | Docker | README afirma incluir Dockerfile; no existe en el árbol de esa revisión. | No hay receta Docker validada ni despliegue en esta fase. |
 | CI y tests | No hay workflows CI ni ficheros de tests upstream; pytest aparece como dependencia de desarrollo. | Se añaden comprobaciones locales del lanzador, sin afirmar CI ni resultados no ejecutados. |
-| Lint frontend | `pnpm lint` fallaba en la base por `_updated` sin usar en `frontend/src/App.tsx:39`. | Excepción mínima: retirar ese parámetro y el import de tipo `BalanceSnapshot`; el cuerpo del callback permanece igual. |
+| Lint frontend | `pnpm lint` fallaba en la base por `_updated` sin usar en `frontend/src/App.tsx:39`. | Retirar ese parámetro y el import de tipo `BalanceSnapshot`; el cuerpo de ese callback permanece igual. |
+| Estado tras login | Tras un login correcto persistía `Authentication required` del fetch anónimo inicial hasta el refresco automático. | `App.tsx` recarga dashboard y ajustes tras autenticar; `useDashboard.ts` añade `reload` de datos guardados, sin forzar peticiones a proveedores. |
 | Configuración | Los módulos de arranque upstream no cargan `.env` expresamente; el ejemplo incluye dominios del autor. | Usar la configuración explícita del lanzador local. |
 
 Estas limitaciones no se resuelven por añadir documentación ECC. Los endpoints de proveedores, saldos reales, renovaciones y futuras suscripciones permanecen fuera de la validación de instalación.
