@@ -1,3 +1,27 @@
+# Reckoner4MM — instalación local y piloto ECC
+
+Reckoner4MM parte de [CaptainASIC/reckoner](https://github.com/CaptainASIC/reckoner) en la revisión `8a5d5b0d77f0461abf98e61709cf02d94c63fddb`. Esta fase instala la aplicación local y añade un procedimiento común para Codex y Claude. **Las ampliaciones P0, P1 y P2 del PRD siguen pendientes.** No se conectan cuentas ni credenciales reales de proveedores y no se despliega a servicios externos.
+
+Desde `/Volumes/OWC Envoy Ultra/reckoner4MM`, abrir `Reckoner4MM.command` o ejecutar:
+
+```bash
+python3 scripts/local.py start
+```
+
+La interfaz local está en [127.0.0.1:5174](http://127.0.0.1:5174), con backend en `127.0.0.1:8014`. La contraseña persistente se crea en `.env.local`; su visualización pertenece exclusivamente al usuario en su terminal local. Las pruebas locales pueden consumirla internamente sin exponer su valor. [Uso, estado, reinicio y contraseña](docs/development/local-setup.md).
+
+- [Flujo compartido de trabajo](docs/development/workflow.md): alcance, carriles, evidencia y revisión independiente.
+- [Ficha de tarea](docs/development/task-template.md) y [continuidad entre sesiones](docs/development/handoff-template.md).
+- [Procedencia de ECC y licencia MIT](docs/development/ecc-provenance.md). El piloto es local e informativo, sin instalación global ni nuevos hooks bloqueantes; se conserva [la licencia GPL de Reckoner](LICENSE).
+
+La base upstream requiere **Python 3.13**, contiene **19 proveedores** y programa el sondeo cada **30 segundos**. No incluye Dockerfile, workflows CI ni ficheros de tests; esta instalación añade comprobaciones locales del lanzador. Las correcciones mínimas de instalación son retirar un parámetro y su import de tipo sin usar para resolver el lint original, y recargar dashboard y ajustes tras un login correcto para eliminar el error inicial de autenticación. Afectan a `App.tsx` y `useDashboard.ts`; la recarga consulta datos guardados y no fuerza un sondeo de proveedores. Los límites restantes se documentan en [las discrepancias del baseline](docs/development/local-setup.md#límites-observados-en-la-base-upstream) y no se han corregido en este piloto.
+
+## Documentación original de upstream
+
+Se conserva a continuación como referencia histórica de la base importada. Para la instalación local de Reckoner4MM prevalece la guía anterior. Las instrucciones originales de credenciales y despliegue no forman parte del alcance actual; sus cifras y recetas deben contrastarse con el código antes de usarlas.
+
+---
+
 <p align="center">
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="frontend/public/reckoner-white.png" />
