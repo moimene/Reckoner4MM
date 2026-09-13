@@ -19,11 +19,10 @@ import { Footer } from './components/Footer';
 import { ProviderCard } from './components/ProviderCard';
 import { LoginPage } from './pages/LoginPage';
 import { SettingsPage } from './pages/SettingsPage';
-import type { BalanceSnapshot } from './types';
 
 export default function App() {
   const auth = useAuth();
-  const { data, loading, refreshing, error, refresh, lastFetch } = useDashboard();
+  const { data, loading, refreshing, error, refresh, reload: reloadDashboard, lastFetch } = useDashboard();
   const { settings, reload: reloadSettings } = useSettings();
   const [showSettings, setShowSettings] = useState(false);
   const [showLogin, setShowLogin] = useState(false);
@@ -36,7 +35,7 @@ export default function App() {
   const aiProviders    = visibleProviders.filter((p) => p.category === 'ai');
   const cloudProviders = visibleProviders.filter((p) => p.category === 'cloud');
 
-  const handleProviderRefreshed = (_updated: BalanceSnapshot) => {
+  const handleProviderRefreshed = () => {
     // The 60s auto-refresh will pick up changes; manual refresh button handles immediate feedback
   };
 
@@ -48,7 +47,10 @@ export default function App() {
 
   const handleLogin = async (password: string): Promise<boolean> => {
     const ok = await auth.login(password);
-    if (ok) setShowLogin(false);
+    if (ok) {
+      setShowLogin(false);
+      await Promise.all([reloadDashboard(), reloadSettings()]);
+    }
     return ok;
   };
 

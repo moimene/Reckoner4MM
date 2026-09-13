@@ -14,6 +14,7 @@ interface UseDashboardResult {
   refreshing: boolean;
   error: string | null;
   refresh: () => Promise<void>;
+  reload: () => Promise<void>;
   lastFetch: Date | null;
 }
 
@@ -65,6 +66,7 @@ export function useDashboard(): UseDashboardResult {
   }, [fetchDashboard]);
 
   const refresh = useCallback(() => fetchDashboard(true), [fetchDashboard]);
+  const reload = useCallback(() => fetchDashboard(false), [fetchDashboard]);
 
-  return { data, loading, refreshing, error, refresh, lastFetch };
+  return { data, loading, refreshing, error, refresh, reload, lastFetch };
 }

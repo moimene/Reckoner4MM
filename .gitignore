@@ -34,3 +34,6 @@ Thumbs.db
 
 # Logs
 *.log
+
+# Reckoner4MM local launcher state (never publish)
+.local-runtime/
